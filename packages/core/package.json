@@ -1,0 +1,21 @@
+{
+  "name": "@valuz-genui/core",
+  "private": true,
+  "version": "0.1.0",
+  "description": "generate_ui engine: prompt assembly, model streaming loop, A2UI document extraction and validation",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint src --ext .ts",
+    "test": "cd ../.. && vitest run --config vitest.config.ts packages/core/src"
+  },
+  "dependencies": {
+    "@valuz-genui/a2ui": "workspace:*",
+    "ai": "^7.0.66",
+    "zod": "^3.25.76"
+  }
+}

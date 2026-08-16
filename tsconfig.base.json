@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "baseUrl": ".",
+    "paths": {
+      "@valuz-genui/a2ui": ["./packages/a2ui/src/index.ts"],
+      "@valuz-genui/a2ui/catalog": ["./packages/a2ui/src/catalog/index.ts"],
+      "@valuz-genui/a2ui/react": ["./packages/a2ui/src/react/index.ts"],
+      "@valuz-genui/a2ui/stream": ["./packages/a2ui/src/stream/index.ts"],
+      "@valuz-genui/a2ui/theme": ["./packages/a2ui/src/theme/index.ts"],
+      "@valuz-genui/a2ui/gallery": ["./packages/a2ui/src/gallery/index.ts"],
+      "@valuz-genui/core": ["./packages/core/src/index.ts"]
+    }
+  }
+}

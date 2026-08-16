@@ -1,0 +1,79 @@
+/*
+ * Generation skeleton + streaming tail for <A2UIRenderer>. These render before
+ * any surface (and therefore before any .valuz-a2ui token scope) exists, so
+ * they are self-contained: neutral currentColor washes that read fine on any
+ * host background in light and dark.
+ */
+.va2-generation-skeleton {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.va2-generation-skeleton__title,
+.va2-generation-skeleton__subtitle,
+.va2-generation-skeleton__line {
+  border-radius: 6px;
+  background: color-mix(in oklab, currentColor 9%, transparent);
+  animation: va2-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.va2-generation-skeleton__title {
+  height: 24px;
+  width: min(224px, 100%);
+}
+
+.va2-generation-skeleton__subtitle {
+  height: 14px;
+  width: min(144px, 100%);
+  margin-top: 8px;
+}
+
+.va2-generation-skeleton__grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+}
+
+.va2-generation-skeleton__card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid color-mix(in oklab, currentColor 10%, transparent);
+  border-radius: 12px;
+}
+
+.va2-generation-skeleton__line {
+  height: 12px;
+  width: 100%;
+}
+
+.va2-generation-skeleton__line--short {
+  width: 96px;
+  max-width: 100%;
+}
+
+.va2-generation-skeleton__line--medium {
+  width: 80%;
+}
+
+.va2-generation-tail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 4px;
+}
+
+.va2-generation-tail .va2-generation-skeleton__line {
+  width: 128px;
+}
+
+@keyframes va2-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
