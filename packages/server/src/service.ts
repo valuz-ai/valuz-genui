@@ -15,20 +15,21 @@ import {
   generateUI,
   type GenerateUIEvent,
   type GenerateUIResult,
-  type ModelCallOptions,
+  type ModelStreamer,
+  type ReasoningEffort,
 } from "@valuz-genui/core";
-import type { LanguageModel } from "ai";
 
 import type { GenerationDefaults } from "./config";
 import type { GenerateRequest } from "./request";
 
 export interface GenUIServiceOptions {
-  model: LanguageModel;
+  /** The model channel; see `createVercelStreamer` for the AI SDK adapter. */
+  streamer: ModelStreamer;
   /** Label reported by /health and SSE start events. */
   modelLabel: string;
   generation: GenerationDefaults;
-  /** Reasoning setting / provider options / raw-reasoning recovery for every call. */
-  callOptions?: Pick<ModelCallOptions, "reasoning" | "providerOptions" | "rawReasoning">;
+  /** Reasoning effort applied to every generation unless a request overrides it. */
+  reasoningEffort?: ReasoningEffort;
   /** The catalog to teach and validate against; defaults to the base catalog. */
   catalog?: readonly ComponentApi[];
 }
@@ -52,17 +53,17 @@ export type GenerateOutcome =
   | { ok: false; error: string; raw: string; attempts: number };
 
 export class GenUIService {
-  readonly model: LanguageModel;
+  readonly streamer: ModelStreamer;
   readonly modelLabel: string;
   readonly generation: GenerationDefaults;
-  readonly callOptions: Pick<ModelCallOptions, "reasoning" | "providerOptions" | "rawReasoning">;
+  readonly reasoningEffort: ReasoningEffort | undefined;
   readonly catalog: readonly ComponentApi[];
 
   constructor(options: GenUIServiceOptions) {
-    this.model = options.model;
+    this.streamer = options.streamer;
     this.modelLabel = options.modelLabel;
     this.generation = options.generation;
-    this.callOptions = options.callOptions ?? {};
+    this.reasoningEffort = options.reasoningEffort;
     this.catalog = options.catalog ?? valuzBaseComponentApis;
   }
 
@@ -86,7 +87,7 @@ export class GenUIService {
   async generate(request: GenerateRequest, callbacks: GenerateCallbacks = {}): Promise<GenerateOutcome> {
     try {
       const result = await generateUI({
-        model: this.model,
+        streamer: this.streamer,
         catalog: this.catalog,
         request: request.request,
         data: request.data,
@@ -97,9 +98,7 @@ export class GenUIService {
         maxContinuations: request.maxContinuations ?? this.generation.maxContinuations,
         maxAttempts: this.generation.maxAttempts,
         temperature: request.temperature ?? this.generation.temperature,
-        reasoning: this.callOptions.reasoning,
-        providerOptions: this.callOptions.providerOptions,
-        rawReasoning: this.callOptions.rawReasoning,
+        reasoningEffort: this.reasoningEffort,
         abortSignal: callbacks.abortSignal,
         onDelta: callbacks.onDelta,
         onReasoning: callbacks.onReasoning,

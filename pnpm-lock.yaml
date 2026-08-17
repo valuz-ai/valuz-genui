@@ -111,9 +111,6 @@ importers:
       '@valuz-genui/a2ui':
         specifier: workspace:*
         version: link:../a2ui
-      ai:
-        specifier: ^7.0.66
-        version: 7.0.66(zod@3.25.76)
       zod:
         specifier: ^3.25.76
         version: 3.25.76

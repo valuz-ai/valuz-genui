@@ -4,16 +4,19 @@ Standalone **generate_ui**: a natural-language request (plus optional data) goes
 [A2UI v0.9.1](https://a2ui.org) JSONL document comes out, and a React renderer draws it —
 streaming, with continuation on truncation and per-component schema tolerance.
 
-All TypeScript. Model access is the [Vercel AI SDK](https://ai-sdk.dev) (OpenAI / Anthropic /
-Google / any OpenAI-compatible endpoint). Extracted from Valuz OSS's `generate_ui` tool and
+All TypeScript. The core talks to models through a small `ModelStreamer` contract; the server
+supplies it via the [Vercel AI SDK](https://ai-sdk.dev) (OpenAI / Anthropic / Google / any
+OpenAI-compatible endpoint), and other hosts (e.g. a DeepSeek Harness plugin) supply their own. Extracted from Valuz OSS's `generate_ui` tool and
 `@valuz/a2ui` package (PR valuz-ai/valuz-oss#858) with the host coupling removed.
 
 ```
 packages/a2ui         @valuz-genui/a2ui        76-component catalog (strict zod) + React renderer + theme
                                          + streaming sanitizer (`./stream`) + <A2UIRenderer>
-packages/core         @valuz-genui/core        prompt assembly · model loop (stream/continue/retry) ·
-                                         document extraction · validation
-packages/server       @valuz-genui/server      Hono: POST /generate (SSE|JSON) · GET /catalog · /health · POST /mcp
+packages/core         @valuz-genui/core        prompt assembly · model loop (stream/continue/retry) over
+                                         the `ModelStreamer` contract · document extraction · validation
+                                         (provider-free; `FakeStreamer` for tests)
+packages/server       @valuz-genui/server      Vercel AI SDK `ModelStreamer` adapter · Hono: POST /generate
+                                         (SSE|JSON) · GET /catalog · /health · POST /mcp
 apps/playground       @valuz-genui/playground  Vite + React: request → live render · JSONL · log · gallery
 ```
 

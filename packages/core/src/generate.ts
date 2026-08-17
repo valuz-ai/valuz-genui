@@ -2,12 +2,12 @@
  * The generation loop: prompt → model (streaming, with continuation on
  * truncation and retry on blank/failed output) → canonical A2UI document.
  *
- * Model access goes through the Vercel AI SDK, so any `LanguageModel` works:
- * a provider factory result, a wrapped model, or a mock in tests.
+ * Model access goes through the `ModelStreamer` contract in `./streamer`, so
+ * any host can supply the model: the Vercel AI SDK adapter in
+ * `@valuz-genui/server`, a harness-native adapter, or `FakeStreamer` in tests.
  */
 import { valuzBaseComponentApis, type ComponentApi } from "@valuz-genui/a2ui/catalog";
 import type { RejectedComponent } from "@valuz-genui/a2ui/stream";
-import { generateText, streamText, type FinishReason, type LanguageModel, type ModelMessage } from "ai";
 
 import {
   CONTINUATION_PROMPT,
@@ -20,19 +20,13 @@ import {
 } from "./constants";
 import { a2uiMessageLines, ensureSupportedCatalogId, extractA2UIDocument } from "./extract";
 import { buildPrompt, type BuildPromptOptions } from "./prompt";
+import type { ModelStreamer, ReasoningEffort, StreamerFinishReason, StreamerMessage } from "./streamer";
 import { inspectDocument } from "./validate";
-
-/** Provider-specific options passed through to the model call (not re-exported by `ai`). */
-export type ProviderOptions = NonNullable<Parameters<typeof streamText>[0]["providerOptions"]>;
-
-/** The SDK's unified reasoning-effort setting (`'none' | 'minimal' | 'low' | … | 'xhigh'`). */
-export type ReasoningSetting = NonNullable<Parameters<typeof streamText>[0]["reasoning"]>;
 
 export type GenerateUIEvent =
   | { type: "attempt"; attempt: number; maxAttempts: number }
-  | { type: "turn"; attempt: number; continuation: number; finishReason: FinishReason; chars: number; truncated: boolean }
+  | { type: "turn"; attempt: number; continuation: number; finishReason: StreamerFinishReason; chars: number; truncated: boolean }
   | { type: "continuation"; attempt: number; continuation: number; maxContinuations: number }
-  | { type: "fallback"; attempt: number; reason: string }
   | { type: "retry"; attempt: number; maxAttempts: number; reason: string };
 
 export interface TokenUsage {
@@ -43,20 +37,12 @@ export interface TokenUsage {
 export interface ModelCallOptions {
   maxOutputTokens?: number;
   temperature?: number;
-  /** Unified reasoning effort; undefined = provider default. */
-  reasoning?: ReasoningSetting;
-  providerOptions?: ProviderOptions;
-  /**
-   * Also recover reasoning from raw provider chunks. Needed behind
-   * `@ai-sdk/openai` when the endpoint (DeepSeek, …) streams the full chain of
-   * thought as `response.reasoning_text.delta` / `delta.reasoning_content`,
-   * which that provider does not map to reasoning parts.
-   */
-  rawReasoning?: boolean;
+  /** Unified reasoning effort; undefined = provider default. The streamer maps it. */
+  reasoningEffort?: ReasoningEffort;
 }
 
 export interface CompletionOptions extends ModelCallOptions {
-  model: LanguageModel;
+  streamer: ModelStreamer;
   prompt: string;
   maxContinuations?: number;
   abortSignal?: AbortSignal;
@@ -73,30 +59,11 @@ export interface CompletionResult {
   text: string;
   /** The model's reasoning across all turns (empty when the model exposes none). */
   reasoning: string;
-  finishReason: FinishReason | null;
+  finishReason: StreamerFinishReason | null;
   usage: TokenUsage;
   continuations: number;
   /** True when the output was still cut after every continuation. */
   stillTruncated: boolean;
-}
-
-/**
- * Reasoning text carried by one raw provider chunk, for endpoints whose
- * reasoning the SDK provider ignores. Recognizes the OpenAI Responses shape
- * (`response.reasoning_text.delta`) and the Chat Completions shape
- * (`choices[0].delta.reasoning_content`).
- */
-export function reasoningFromRawChunk(rawValue: unknown): string {
-  if (!rawValue || typeof rawValue !== "object") return "";
-  const raw = rawValue as Record<string, unknown>;
-  if (raw.type === "response.reasoning_text.delta" && typeof raw.delta === "string") return raw.delta;
-  if (Array.isArray(raw.choices)) {
-    const first = raw.choices[0] as { delta?: { reasoning_content?: unknown; reasoning?: unknown } } | undefined;
-    const delta = first?.delta;
-    if (delta && typeof delta.reasoning_content === "string") return delta.reasoning_content;
-    if (delta && typeof delta.reasoning === "string") return delta.reasoning;
-  }
-  return "";
 }
 
 function addUsage(total: TokenUsage, usage: { inputTokens?: number; outputTokens?: number } | undefined): TokenUsage {
@@ -118,14 +85,12 @@ function join(accumulated: string, text: string): string {
  */
 export async function completeA2UI(options: CompletionOptions): Promise<CompletionResult> {
   const {
-    model,
+    streamer,
     prompt,
     maxOutputTokens = DEFAULT_MAX_OUTPUT_TOKENS,
     maxContinuations = DEFAULT_MAX_CONTINUATIONS,
     temperature,
-    reasoning: reasoningSetting,
-    providerOptions,
-    rawReasoning = false,
+    reasoningEffort,
     abortSignal,
     onDelta,
     onReasoning,
@@ -133,66 +98,43 @@ export async function completeA2UI(options: CompletionOptions): Promise<Completi
     attempt = 1,
   } = options;
 
-  const callSettings = {
-    model,
-    maxOutputTokens,
-    abortSignal,
-    ...(temperature !== undefined ? { temperature } : {}),
-    ...(reasoningSetting !== undefined ? { reasoning: reasoningSetting } : {}),
-    ...(providerOptions ? { providerOptions } : {}),
-  };
-
-  const messages: ModelMessage[] = [{ role: "user", content: prompt }];
+  const messages: StreamerMessage[] = [{ role: "user", content: prompt }];
   let accumulated = "";
   let reasoning = "";
   let usage: TokenUsage = { inputTokens: 0, outputTokens: 0 };
-  let finishReason: FinishReason | null = null;
+  let finishReason: StreamerFinishReason | null = null;
   let continuations = 0;
   let stillTruncated = false;
 
   for (let turn = 0; turn <= maxContinuations; turn += 1) {
-    const result = streamText({
-      ...callSettings,
-      messages,
-      includeRawChunks: rawReasoning,
-      onError: () => {
-        // Errors surface as `error` parts below; keep the stream from logging
-        // to the console on its own.
-      },
-    });
-
     let text = "";
     let turnReasoning = "";
-    // Once the provider itself yields reasoning parts, raw chunks would only
-    // duplicate them; the fallback is for providers that never do.
-    let sawProviderReasoning = false;
-    const pushReasoning = (chunk: string) => {
-      if (!chunk) return;
-      turnReasoning += chunk;
-      onReasoning?.(chunk);
-    };
-    for await (const part of result.fullStream) {
-      switch (part.type) {
+    let turnFinish: StreamerFinishReason | null = null;
+    for await (const event of streamer.stream({
+      messages,
+      maxOutputTokens,
+      ...(temperature !== undefined ? { temperature } : {}),
+      ...(reasoningEffort !== undefined ? { reasoningEffort } : {}),
+      ...(abortSignal ? { signal: abortSignal } : {}),
+    })) {
+      switch (event.type) {
         case "text-delta":
-          if (!part.text) break;
-          text += part.text;
-          onDelta?.(part.text);
+          if (!event.text) break;
+          text += event.text;
+          onDelta?.(event.text);
           break;
         case "reasoning-delta":
-          sawProviderReasoning = true;
-          pushReasoning(part.text);
+          if (!event.text) break;
+          turnReasoning += event.text;
+          onReasoning?.(event.text);
           break;
-        case "raw":
-          if (rawReasoning && !sawProviderReasoning) pushReasoning(reasoningFromRawChunk(part.rawValue));
-          break;
-        case "error":
-          throw part.error instanceof Error ? part.error : new Error(String(part.error));
-        default:
+        case "finish":
+          turnFinish = event.reason;
+          usage = addUsage(usage, event.usage);
           break;
       }
     }
-    finishReason = await result.finishReason;
-    usage = addUsage(usage, await result.usage);
+    finishReason = turnFinish ?? "other";
     reasoning = join(reasoning, turnReasoning);
 
     if (!text.trim() && turnReasoning.trim() && finishReason === "length") {
@@ -200,24 +142,16 @@ export async function completeA2UI(options: CompletionOptions): Promise<Completi
       // most likely spend it the same way; say what to change instead.
       throw new Error(
         `model spent the entire output budget (${maxOutputTokens} tokens) on reasoning ` +
-          `(${turnReasoning.length} chars) and produced no answer — raise maxOutputTokens / ` +
-          "VALUZ_GENUI_MAX_OUTPUT_TOKENS or lower the reasoning effort",
+          `(${turnReasoning.length} chars) and produced no answer — raise maxOutputTokens ` +
+          "or lower the reasoning effort",
       );
     }
 
     if (!text.trim() && turn === 0) {
-      // Some channels deliver nothing over the stream but answer a plain
-      // request; try once before giving up on this attempt.
-      onEvent?.({ type: "fallback", attempt, reason: "stream produced no text; retrying without streaming" });
-      const plain = await generateText({ ...callSettings, messages });
-      text = plain.text;
-      finishReason = plain.finishReason;
-      usage = addUsage(usage, plain.usage);
-      if (plain.reasoningText && !turnReasoning) {
-        reasoning = join(reasoning, plain.reasoningText);
-        onReasoning?.(plain.reasoningText);
-      }
-      if (text) onDelta?.(text);
+      // A blank first turn is a failed attempt; the caller's retry loop decides
+      // whether to try again. (Channels that answer only non-streaming requests
+      // are a streamer concern — see the Vercel adapter's fallback.)
+      throw new Error("model returned blank output");
     }
 
     const { lines, truncated: openTail } = a2uiMessageLines(text);
@@ -247,7 +181,7 @@ export async function completeA2UI(options: CompletionOptions): Promise<Completi
 }
 
 export interface GenerateUIOptions extends Omit<BuildPromptOptions, "catalog">, ModelCallOptions {
-  model: LanguageModel;
+  streamer: ModelStreamer;
   /** The catalog to teach and validate against; defaults to the base catalog. */
   catalog?: readonly ComponentApi[];
   /** Catalog id every generated surface is pinned to. */
@@ -273,7 +207,7 @@ export interface GenerateUIResult {
   prompt: string;
   attempts: number;
   continuations: number;
-  finishReason: FinishReason | null;
+  finishReason: StreamerFinishReason | null;
   usage: TokenUsage;
   /** Components the renderer will drop (schema/registration failures). */
   warnings: RejectedComponent[];
@@ -347,14 +281,12 @@ export async function generateUI(options: GenerateUIOptions): Promise<GenerateUI
     let completion: CompletionResult | null = null;
     try {
       completion = await completeA2UI({
-        model: options.model,
+        streamer: options.streamer,
         prompt: built.prompt,
         maxOutputTokens: options.maxOutputTokens,
         maxContinuations: options.maxContinuations,
         temperature: options.temperature,
-        reasoning: options.reasoning,
-        providerOptions: options.providerOptions,
-        rawReasoning: options.rawReasoning,
+        reasoningEffort: options.reasoningEffort,
         abortSignal: options.abortSignal,
         onDelta: options.onDelta,
         onReasoning: options.onReasoning,

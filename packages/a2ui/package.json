@@ -4,7 +4,9 @@
   "version": "0.1.0",
   "description": "Standalone React renderer, component catalog and streaming sanitizer for A2UI v0.9.1",
   "type": "module",
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": "./src/index.ts",
     "./catalog": "./src/catalog/index.ts",
@@ -32,8 +34,8 @@
     "zod": "^3.25.76"
   },
   "peerDependencies": {
-    "react": ">=19.0.0",
-    "react-dom": ">=19.0.0"
+    "react": ">=18.2.0",
+    "react-dom": ">=18.2.0"
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",

@@ -8,6 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { createApp } from "./app";
 import { GenUIService } from "./service";
+import { createVercelStreamer } from "./vercel-streamer";
 
 const usage = {
   inputTokens: { total: 10, noCache: 10, cacheRead: 0, cacheWrite: 0 },
@@ -53,7 +54,7 @@ const DOC = [
 
 function makeService(text: string, reasoning?: string) {
   return new GenUIService({
-    model: new MockLanguageModelV4({ doStream: async () => turn(text, reasoning) }),
+    streamer: createVercelStreamer({ model: new MockLanguageModelV4({ doStream: async () => turn(text, reasoning) }) }),
     modelLabel: "mock:test",
     generation: { maxOutputTokens: 1000, maxContinuations: 1, maxAttempts: 1 },
   });

@@ -9,8 +9,8 @@
  * temporarily unparseable.
  */
 import type { ReactComponentImplementation } from "@a2ui/react/v0_9";
-import type { SurfaceModel } from "@a2ui/web_core/v0_9";
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import type { ActionListener, SurfaceModel } from "@a2ui/web_core/v0_9";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { hasRenderableComponents, sanitizeA2UIStream, type RejectedComponent } from "../stream";
 import { createValuzMessageProcessor } from "./catalog";
@@ -29,6 +29,14 @@ export interface A2UIRendererProps {
   className?: string;
   /** Called with the components dropped by schema validation (dev diagnostics). */
   onRejected?: (rejected: RejectedComponent[]) => void;
+  /**
+   * Receives every user action the surface dispatches (button `action`, form
+   * `submit`, follow-up items, …) as an A2UI client action. Without it the
+   * surface renders read-only: actions are dropped.
+   */
+  onAction?: ActionListener;
+  /** Log skipped components and unrenderable payloads to the console. Off by default. */
+  debug?: boolean;
 }
 
 interface BuiltSurfaces {
@@ -36,21 +44,32 @@ interface BuiltSurfaces {
   rejected: RejectedComponent[];
 }
 
-export function buildA2UISurfaces(body: string, suppressWarnings = false): BuiltSurfaces {
+export interface BuildA2UISurfacesOptions {
+  /** Suppress console diagnostics for this build (a stream still in flight). */
+  suppressWarnings?: boolean;
+  /** Log diagnostics at all; off by default so hosts opt in explicitly. */
+  debug?: boolean;
+  /** Action listener installed on the message processor. */
+  onAction?: ActionListener;
+}
+
+export function buildA2UISurfaces(body: string, options: BuildA2UISurfacesOptions | boolean = {}): BuiltSurfaces {
+  const { suppressWarnings = false, debug = false, onAction } =
+    typeof options === "boolean" ? { suppressWarnings: options } : options;
   const sanitized = sanitizeA2UIStream(body, effectiveA2UIComponents());
   const { messages, rejected } = sanitized;
   if (!messages.length || !hasRenderableComponents(messages)) return { surfaces: [], rejected };
-  if (import.meta.env.DEV && rejected.length && !suppressWarnings) {
+  if (debug && rejected.length && !suppressWarnings) {
     console.warn("[a2ui] skipped invalid component(s)", JSON.stringify(rejected));
   }
-  const processor = createValuzMessageProcessor();
+  const processor = createValuzMessageProcessor(onAction);
   try {
     processor.processMessages(messages as never);
   } catch (error) {
     // Streaming JSON is completed best-effort before all required fields have
     // arrived; keep the last good surface instead of reporting expected
     // intermediate validation failures.
-    if (import.meta.env.DEV && !suppressWarnings) {
+    if (debug && !suppressWarnings) {
       console.warn("[a2ui] failed to render payload", error);
     }
     return { surfaces: [], rejected };
@@ -99,18 +118,30 @@ function GenerationTail() {
   );
 }
 
-export function A2UIRenderer({ body, status, theme, className, onRejected }: A2UIRendererProps) {
+export function A2UIRenderer({ body, status, theme, className, onRejected, onAction, debug = false }: A2UIRendererProps) {
   const version = useSyncExternalStore(
     subscribeA2UIComponents,
     getA2UIRegistryVersion,
     getA2UIRegistryVersion,
   );
 
+  // Surfaces are rebuilt only when the body changes; the listener installed on
+  // them is a stable trampoline so a new `onAction` identity per render never
+  // resets rendered state. The ref is refreshed after commit, before any user
+  // event can reach the surface.
+  const onActionRef = useRef<ActionListener | undefined>(onAction);
+  useEffect(() => {
+    onActionRef.current = onAction;
+  }, [onAction]);
+  const dispatchAction = useCallback<ActionListener>((action) => onActionRef.current?.(action), []);
+
   const built = useMemo(
-    () => buildA2UISurfaces(body, status === "running"),
+    // `dispatchAction` only reads the ref when an event fires, never during render.
+    // eslint-disable-next-line react-hooks/refs
+    () => buildA2UISurfaces(body, { suppressWarnings: status === "running", debug, onAction: dispatchAction }),
     // `version` invalidates the memo when the registry changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [body, version, status],
+    [body, version, status, debug],
   );
 
   useEffect(() => {

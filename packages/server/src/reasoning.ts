@@ -12,7 +12,7 @@
  *   an effort value — handled in model.ts via `transformRequestBody`.
  * - Its Anthropic endpoint honours `thinking` but ignores `budget_tokens`.
  */
-import type { ProviderOptions } from "@valuz-genui/core";
+import type { ProviderOptions } from "./vercel-streamer";
 
 import type { ModelConfig, ReasoningEffort } from "./config";
 

@@ -10,7 +10,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-import { reasoningFromRawChunk } from "@valuz-genui/core";
+import { reasoningFromRawChunk } from "../src/vercel-streamer";
 import { streamText } from "ai";
 
 import { resolveModelConfig, resolveServerConfig } from "../src/config";

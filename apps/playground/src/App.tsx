@@ -362,7 +362,7 @@ export function App() {
                 ) : null}
                 {error && !previewBody ? <div className="pg-error">{error}</div> : null}
                 {previewBody || status === "running" ? (
-                  <A2UIRenderer body={previewBody} status={previewStatus} theme={theme} />
+                  <A2UIRenderer body={previewBody} status={previewStatus} theme={theme} debug={import.meta.env.DEV} />
                 ) : (
                   <div className="pg-empty">Generate something to see it rendered here.</div>
                 )}

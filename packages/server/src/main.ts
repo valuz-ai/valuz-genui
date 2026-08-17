@@ -12,6 +12,7 @@ import { createApp } from "./app";
 import { ConfigError, resolveModelConfig, resolveServerConfig } from "./config";
 import { createModel, describeModel } from "./model";
 import { needsRawReasoning, reasoningCallOptions } from "./reasoning";
+import { createVercelStreamer } from "./vercel-streamer";
 import { GenUIService } from "./service";
 
 function loadDotEnv(path: string): void {
@@ -55,13 +56,14 @@ try {
 
 const reasoningEffort = serverConfig.generation.reasoningEffort;
 const service = new GenUIService({
-  model: createModel(modelConfig, { reasoningEffort }),
-  modelLabel: describeModel(modelConfig),
-  generation: serverConfig.generation,
-  callOptions: {
+  streamer: createVercelStreamer({
+    model: createModel(modelConfig, { reasoningEffort }),
+    label: describeModel(modelConfig),
     ...reasoningCallOptions(modelConfig, reasoningEffort),
     rawReasoning: needsRawReasoning(modelConfig),
-  },
+  }),
+  modelLabel: describeModel(modelConfig),
+  generation: serverConfig.generation,
 });
 const app = createApp({ service, corsOrigin: serverConfig.corsOrigin, mcp: serverConfig.mcp });
 
