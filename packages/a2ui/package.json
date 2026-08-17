@@ -7,27 +7,13 @@
     "**/*.css"
   ],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./catalog": {
-      "types": "./dist/catalog/index.d.ts",
-      "default": "./dist/catalog/index.js"
-    },
-    "./react": {
-      "types": "./dist/react/index.d.ts",
-      "default": "./dist/react/index.js"
-    },
-    "./stream": {
-      "types": "./dist/stream/index.d.ts",
-      "default": "./dist/stream/index.js"
-    },
-    "./theme": {
-      "types": "./dist/theme/index.d.ts",
-      "default": "./dist/theme/index.js"
-    },
-    "./styles.css": "./dist/styles.css",
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog/index.ts",
+    "./gallery": "./src/gallery/index.ts",
+    "./react": "./src/react/index.ts",
+    "./stream": "./src/stream/index.ts",
+    "./theme": "./src/theme/index.ts",
+    "./styles.css": "./src/styles.css",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -64,10 +50,36 @@
     "directory": "packages/a2ui"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./catalog": {
+        "types": "./dist/catalog/index.d.ts",
+        "default": "./dist/catalog/index.js"
+      },
+      "./react": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.js"
+      },
+      "./stream": {
+        "types": "./dist/stream/index.d.ts",
+        "default": "./dist/stream/index.js"
+      },
+      "./theme": {
+        "types": "./dist/theme/index.d.ts",
+        "default": "./dist/theme/index.js"
+      },
+      "./styles.css": "./dist/styles.css",
+      "./package.json": "./package.json"
+    }
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "files": [
     "dist"
   ]
