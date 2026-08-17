@@ -1,5 +1,5 @@
 {
-  "name": "@valuz/server",
+  "name": "@valuz/genui-server",
   "private": true,
   "version": "0.1.0",
   "description": "generate_ui HTTP + MCP server (Hono, Vercel AI SDK)",
@@ -19,7 +19,7 @@
     "@ai-sdk/openai": "^4.0.42",
     "@ai-sdk/openai-compatible": "^3.0.30",
     "@valuz/a2ui": "workspace:*",
-    "@valuz/genui": "workspace:*",
+    "@valuz/genui-core": "workspace:*",
     "@hono/node-server": "^2.1.1",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "ai": "^7.0.66",

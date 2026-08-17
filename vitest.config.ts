@@ -15,7 +15,7 @@ export default defineConfig({
       "@valuz/a2ui/theme": resolvePath("./packages/a2ui/src/theme/index.ts"),
       "@valuz/a2ui/gallery": resolvePath("./packages/a2ui/src/gallery/index.ts"),
       "@valuz/a2ui": resolvePath("./packages/a2ui/src/index.ts"),
-      "@valuz/genui": resolvePath("./packages/core/src/index.ts"),
+      "@valuz/genui-core": resolvePath("./packages/core/src/index.ts"),
     },
   },
   test: {

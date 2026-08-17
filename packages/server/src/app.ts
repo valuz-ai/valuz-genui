@@ -2,7 +2,7 @@
  * The Hono application: health/catalog, `POST /generate` (SSE or JSON), and
  * the MCP endpoint. Built from a `GenUIService` so tests can inject a mock model.
  */
-import type { GenerateUIEvent } from "@valuz/genui";
+import type { GenerateUIEvent } from "@valuz/genui-core";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { streamSSE } from "hono/streaming";

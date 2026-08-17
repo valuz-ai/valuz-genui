@@ -12,12 +12,12 @@ OpenAI-compatible endpoint), and other hosts (e.g. a DeepSeek Harness plugin) su
 ```
 packages/a2ui         @valuz/a2ui        76-component catalog (strict zod) + React renderer + theme
                                          + streaming sanitizer (`./stream`) + <A2UIRenderer>
-packages/core         @valuz/genui        prompt assembly · model loop (stream/continue/retry) over
+packages/core         @valuz/genui-core        prompt assembly · model loop (stream/continue/retry) over
                                          the `ModelStreamer` contract · document extraction · validation
                                          (provider-free; `FakeStreamer` for tests)
-packages/server       @valuz/server      Vercel AI SDK `ModelStreamer` adapter · Hono: POST /generate
+packages/server       @valuz/genui-server      Vercel AI SDK `ModelStreamer` adapter · Hono: POST /generate
                                          (SSE|JSON) · GET /catalog · /health · POST /mcp
-apps/playground       @valuz/playground  Vite + React: request → live render · JSONL · log · gallery
+apps/playground       @valuz/genui-playground  Vite + React: request → live render · JSONL · log · gallery
 ```
 
 ## Quick start
@@ -105,13 +105,13 @@ SSE event; the playground shows it in a collapsible **Thinking** panel above the
   full chain of thought from raw chunks (`response.reasoning_text.delta` / `delta.reasoning_content`).
 - `VALUZ_GENUI_REASONING_EFFORT` sets the effort everywhere; `none` disables thinking on endpoints that
   support it (`openai-compatible` also sends DeepSeek's `thinking: {type: "disabled"}`).
-- `pnpm --filter @valuz/server probe` streams one tiny prompt through the configured model and prints
+- `pnpm --filter @valuz/genui-server probe` streams one tiny prompt through the configured model and prints
   the SDK part types + raw chunk types — the quickest way to see what a new provider exposes.
 
 ## Using the pieces directly
 
 ```ts
-import { generateUI } from "@valuz/genui";
+import { generateUI } from "@valuz/genui-core";
 import { createOpenAI } from "@ai-sdk/openai";
 
 const result = await generateUI({

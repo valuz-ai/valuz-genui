@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { serve, type ServerType } from "@hono/node-server";
-import { SUPPORTED_CATALOG_ID } from "@valuz/genui";
+import { SUPPORTED_CATALOG_ID } from "@valuz/genui-core";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { MockLanguageModelV4, simulateReadableStream } from "ai/test";

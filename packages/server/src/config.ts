@@ -17,7 +17,7 @@ import {
   DEFAULT_MAX_ATTEMPTS,
   DEFAULT_MAX_CONTINUATIONS,
   DEFAULT_MAX_OUTPUT_TOKENS,
-} from "@valuz/genui";
+} from "@valuz/genui-core";
 
 export type ProviderName = "openai" | "anthropic" | "google" | "openai-compatible";
 

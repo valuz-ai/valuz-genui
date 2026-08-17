@@ -24,7 +24,7 @@
       "@valuz/a2ui/stream": ["./packages/a2ui/src/stream/index.ts"],
       "@valuz/a2ui/theme": ["./packages/a2ui/src/theme/index.ts"],
       "@valuz/a2ui/gallery": ["./packages/a2ui/src/gallery/index.ts"],
-      "@valuz/genui": ["./packages/core/src/index.ts"]
+      "@valuz/genui-core": ["./packages/core/src/index.ts"]
     }
   }
 }

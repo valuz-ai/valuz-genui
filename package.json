@@ -9,9 +9,9 @@
     "node": ">=20.19"
   },
   "scripts": {
-    "dev": "pnpm -r --parallel --filter @valuz/server --filter @valuz/playground dev",
-    "dev:server": "pnpm --filter @valuz/server dev",
-    "dev:playground": "pnpm --filter @valuz/playground dev",
+    "dev": "pnpm -r --parallel --filter @valuz/genui-server --filter @valuz/genui-playground dev",
+    "dev:server": "pnpm --filter @valuz/genui-server dev",
+    "dev:playground": "pnpm --filter @valuz/genui-playground dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint . --ext .ts,.tsx",

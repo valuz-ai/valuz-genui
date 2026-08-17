@@ -1,5 +1,5 @@
 {
-  "name": "@valuz/genui",
+  "name": "@valuz/genui-core",
   "version": "0.1.0",
   "description": "generate_ui engine: prompt assembly, model streaming loop, A2UI document extraction and validation",
   "type": "module",

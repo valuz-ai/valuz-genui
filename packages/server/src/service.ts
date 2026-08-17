@@ -17,7 +17,7 @@ import {
   type GenerateUIResult,
   type ModelStreamer,
   type ReasoningEffort,
-} from "@valuz/genui";
+} from "@valuz/genui-core";
 
 import type { GenerationDefaults } from "./config";
 import type { GenerateRequest } from "./request";

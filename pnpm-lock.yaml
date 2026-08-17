@@ -138,7 +138,7 @@ importers:
       '@valuz/a2ui':
         specifier: workspace:*
         version: link:../a2ui
-      '@valuz/genui':
+      '@valuz/genui-core':
         specifier: workspace:*
         version: link:../core
       ai:

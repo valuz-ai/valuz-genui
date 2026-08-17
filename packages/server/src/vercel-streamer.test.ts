@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { MockLanguageModelV4, simulateReadableStream } from "ai/test";
 import { describe, expect, it } from "vitest";
-import type { StreamerEvent } from "@valuz/genui";
+import type { StreamerEvent } from "@valuz/genui-core";
 
 import { createVercelStreamer, reasoningFromRawChunk } from "./vercel-streamer";
 
