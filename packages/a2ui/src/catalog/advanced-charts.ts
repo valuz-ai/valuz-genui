@@ -65,4 +65,4 @@ export const NetworkGraphApi = {
     .describe("Use when entities and weighted links are themselves the analysis; do not use it as decorative navigation."),
 } satisfies ComponentApi;
 
-export const advancedChartApis = [TimeSeriesChartApi, CandlestickChartApi, WaterfallChartApi, RangeChartApi, HistogramChartApi, BoxPlotChartApi, BulletChartApi, CalendarHeatmapChartApi, NetworkGraphApi] as const;
+export const advancedChartApis: readonly ComponentApi[] = [TimeSeriesChartApi, CandlestickChartApi, WaterfallChartApi, RangeChartApi, HistogramChartApi, BoxPlotChartApi, BulletChartApi, CalendarHeatmapChartApi, NetworkGraphApi];

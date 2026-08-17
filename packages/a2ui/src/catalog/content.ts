@@ -236,7 +236,7 @@ export const EmptyStateApi = {
     .describe("Explain an intentional empty result and suggest what the user can do next."),
 } satisfies ComponentApi;
 
-export const contentApis = [
+export const contentApis: readonly ComponentApi[] = [
   TextContentApi,
   MarkdownApi,
   ImageApi,
@@ -250,4 +250,4 @@ export const contentApis = [
   ProgressApi,
   SkeletonApi,
   EmptyStateApi,
-] as const;
+];

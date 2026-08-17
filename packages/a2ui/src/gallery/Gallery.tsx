@@ -55,7 +55,7 @@ interface CatalogApiView {
 }
 
 const API_BY_NAME = new Map<string, CatalogApiView>(
-  valuzBaseComponentApis.map((api) => [api.name, api as CatalogApiView]),
+  valuzBaseComponentApis.map((api) => [api.name, api as unknown as CatalogApiView]),
 );
 
 const PALETTE_DESCRIPTIONS: Record<ChartPaletteName, {

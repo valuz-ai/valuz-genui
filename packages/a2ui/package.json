@@ -1,6 +1,5 @@
 {
   "name": "@valuz-genui/a2ui",
-  "private": true,
   "version": "0.1.0",
   "description": "Standalone React renderer, component catalog and streaming sanitizer for A2UI v0.9.1",
   "type": "module",
@@ -8,22 +7,38 @@
     "**/*.css"
   ],
   "exports": {
-    ".": "./src/index.ts",
-    "./catalog": "./src/catalog/index.ts",
-    "./gallery": "./src/gallery/index.ts",
-    "./react": "./src/react/index.ts",
-    "./stream": "./src/stream/index.ts",
-    "./theme": "./src/theme/index.ts",
-    "./styles.css": "./src/styles.css"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./catalog": {
+      "types": "./dist/catalog/index.d.ts",
+      "default": "./dist/catalog/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "default": "./dist/react/index.js"
+    },
+    "./stream": {
+      "types": "./dist/stream/index.d.ts",
+      "default": "./dist/stream/index.js"
+    },
+    "./theme": {
+      "types": "./dist/theme/index.d.ts",
+      "default": "./dist/theme/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsc --noEmit -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json && node -e \"const {cpSync,rmSync}=require('node:fs'); cpSync('src/styles.css','dist/styles.css'); cpSync('src/themes','dist/themes',{recursive:true}); cpSync('src/styles','dist/styles',{recursive:true})\" && node ../../scripts/add-js-extensions.mjs dist",
     "build:demo": "vite build --config vite.config.ts",
     "dev": "vite --config vite.config.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint src demo --ext .ts,.tsx",
     "test": "cd ../.. && vitest run --config vitest.config.ts packages/a2ui/src",
-    "clean": "rm -rf dist dist-demo"
+    "clean": "rm -rf dist dist-demo",
+    "prepublishOnly": "tsc -p tsconfig.build.json && node -e \"const {cpSync,rmSync}=require('node:fs'); cpSync('src/styles.css','dist/styles.css'); cpSync('src/themes','dist/themes',{recursive:true}); cpSync('src/styles','dist/styles',{recursive:true})\" && node ../../scripts/add-js-extensions.mjs dist"
   },
   "dependencies": {
     "@a2ui/react": "^0.10.2",
@@ -41,5 +56,19 @@
     "@types/markdown-it": "^14.1.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
-  }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valuz-ai/valuz-genui.git",
+    "directory": "packages/a2ui"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ]
 }

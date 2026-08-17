@@ -131,4 +131,4 @@ export const SynchronizedChartGroupApi = {
     .describe("Arrange related time-series panels that share an x-axis and analytical context."),
 } satisfies ComponentApi;
 
-export const analyticsApis = [MetricApi, MetricGroupApi, DataTableApi, ComparisonTableApi, MatrixTableApi, DescriptionListApi, TimelineApi, DiffViewApi, CitationApi, SourceListApi, ProvenanceBarApi, DataStateApi, ControlBarApi, DataInspectorApi, TableChartToggleApi, SynchronizedChartGroupApi] as const;
+export const analyticsApis: readonly ComponentApi[] = [MetricApi, MetricGroupApi, DataTableApi, ComparisonTableApi, MatrixTableApi, DescriptionListApi, TimelineApi, DiffViewApi, CitationApi, SourceListApi, ProvenanceBarApi, DataStateApi, ControlBarApi, DataInspectorApi, TableChartToggleApi, SynchronizedChartGroupApi];

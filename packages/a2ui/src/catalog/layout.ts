@@ -166,7 +166,7 @@ export const ModalApi = {
     .describe("Open focused supplementary content without leaving the current surface."),
 } satisfies ComponentApi;
 
-export const layoutApis = [
+export const layoutApis: readonly ComponentApi[] = [
   StackApi,
   GridApi,
   CardApi,
@@ -176,4 +176,4 @@ export const layoutApis = [
   CarouselApi,
   SeparatorApi,
   ModalApi,
-] as const;
+];

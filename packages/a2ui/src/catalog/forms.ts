@@ -151,7 +151,7 @@ export const ToggleGroupApi = {
     .describe("Select one or more compact options using a segmented control."),
 } satisfies ComponentApi;
 
-export const formApis = [
+export const formApis: readonly ComponentApi[] = [
   FormApi,
   InputApi,
   TextAreaApi,
@@ -162,4 +162,4 @@ export const formApis = [
   DatePickerApi,
   SwitchGroupApi,
   ToggleGroupApi,
-] as const;
+];

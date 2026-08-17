@@ -22,7 +22,7 @@ import { layoutApis } from "./layout";
 
 export const VALUZ_BASE_CATALOG_ID = "https://valuz.io/a2ui/catalogs/base/v1";
 
-export const valuzBaseComponentApis = [
+export const valuzBaseComponentApis: readonly ComponentApi[] = [
   ...layoutApis,
   ...contentApis,
   ...formApis,
@@ -30,6 +30,6 @@ export const valuzBaseComponentApis = [
   ...analyticsApis,
   ...advancedChartApis,
   ...chartApis,
-] as const satisfies readonly ComponentApi[];
+];
 
 export const valuzBaseComponentNames = valuzBaseComponentApis.map((component) => component.name);

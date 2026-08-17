@@ -63,4 +63,4 @@ export const FollowUpBlockApi = {
     .describe("Offer concise, context-aware next actions or suggested questions."),
 } satisfies ComponentApi;
 
-export const actionApis = [ButtonApi, ButtonGroupApi, FollowUpBlockApi] as const;
+export const actionApis: readonly ComponentApi[] = [ButtonApi, ButtonGroupApi, FollowUpBlockApi];

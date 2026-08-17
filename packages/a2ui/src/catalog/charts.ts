@@ -258,7 +258,7 @@ export const ScatterChartApi = {
     .describe("Use for observations with two numeric dimensions to reveal correlation, clusters, and outliers; use size only for a third quantitative measure."),
 } satisfies ComponentApi;
 
-export const chartApis = [
+export const chartApis: readonly ComponentApi[] = [
   LineChartApi,
   AreaChartApi,
   BarChartApi,
@@ -275,4 +275,4 @@ export const chartApis = [
   RadarChartApi,
   RadialChartApi,
   ScatterChartApi,
-] as const;
+];
