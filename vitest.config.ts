@@ -9,13 +9,13 @@ export default defineConfig({
   resolve: {
     dedupe: ["react", "react-dom"],
     alias: {
-      "@valuz-genui/a2ui/catalog": resolvePath("./packages/a2ui/src/catalog/index.ts"),
-      "@valuz-genui/a2ui/react": resolvePath("./packages/a2ui/src/react/index.ts"),
-      "@valuz-genui/a2ui/stream": resolvePath("./packages/a2ui/src/stream/index.ts"),
-      "@valuz-genui/a2ui/theme": resolvePath("./packages/a2ui/src/theme/index.ts"),
-      "@valuz-genui/a2ui/gallery": resolvePath("./packages/a2ui/src/gallery/index.ts"),
-      "@valuz-genui/a2ui": resolvePath("./packages/a2ui/src/index.ts"),
-      "@valuz-genui/core": resolvePath("./packages/core/src/index.ts"),
+      "@valuz/a2ui/catalog": resolvePath("./packages/a2ui/src/catalog/index.ts"),
+      "@valuz/a2ui/react": resolvePath("./packages/a2ui/src/react/index.ts"),
+      "@valuz/a2ui/stream": resolvePath("./packages/a2ui/src/stream/index.ts"),
+      "@valuz/a2ui/theme": resolvePath("./packages/a2ui/src/theme/index.ts"),
+      "@valuz/a2ui/gallery": resolvePath("./packages/a2ui/src/gallery/index.ts"),
+      "@valuz/a2ui": resolvePath("./packages/a2ui/src/index.ts"),
+      "@valuz/genui": resolvePath("./packages/core/src/index.ts"),
     },
   },
   test: {

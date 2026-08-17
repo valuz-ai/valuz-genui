@@ -1,7 +1,7 @@
 /**
  * The model boundary of the generation loop. `generateUI` / `completeA2UI`
  * talk to a model only through `ModelStreamer`, so any host can supply one:
- * the Vercel AI SDK adapter in `@valuz-genui/server`, a harness-native
+ * the Vercel AI SDK adapter in `@valuz/server`, a harness-native
  * adapter, or a scripted fake in tests.
  *
  * The contract is deliberately small — the loop needs a multi-turn text

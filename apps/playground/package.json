@@ -1,5 +1,5 @@
 {
-  "name": "@valuz-genui/playground",
+  "name": "@valuz/playground",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -11,7 +11,7 @@
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
-    "@valuz-genui/a2ui": "workspace:*",
+    "@valuz/a2ui": "workspace:*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }

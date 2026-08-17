@@ -2,7 +2,7 @@
  * MCP surface: `generate_ui` (and a helper `list_ui_components`) over the
  * Streamable HTTP transport, stateless — one server + transport per request.
  */
-import { TOOL_DESCRIPTION, TOOL_NAME } from "@valuz-genui/core";
+import { TOOL_DESCRIPTION, TOOL_NAME } from "@valuz/genui";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { z } from "zod";

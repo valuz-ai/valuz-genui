@@ -1,5 +1,5 @@
-import { A2UIRenderer } from "@valuz-genui/a2ui/react";
-import { A2UIGallery } from "@valuz-genui/a2ui/gallery";
+import { A2UIRenderer } from "@valuz/a2ui/react";
+import { A2UIGallery } from "@valuz/a2ui/gallery";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {

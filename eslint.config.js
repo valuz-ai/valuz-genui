@@ -42,8 +42,8 @@ export default tseslint.config(
         {
           patterns: [
             {
-              group: ["react", "react-dom", "@valuz-genui/a2ui/react", "@valuz-genui/a2ui/gallery"],
-              message: "core/server are Node-side; import only @valuz-genui/a2ui/catalog and @valuz-genui/a2ui/stream.",
+              group: ["react", "react-dom", "@valuz/a2ui/react", "@valuz/a2ui/gallery"],
+              message: "core/server are Node-side; import only @valuz/a2ui/catalog and @valuz/a2ui/stream.",
               allowTypeImports: true,
             },
           ],

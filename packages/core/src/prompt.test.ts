@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { SUPPORTED_CATALOG_ID } from "./constants";
 import { buildPrompt, selectCatalog } from "./prompt";
-import { valuzBaseComponentApis } from "@valuz-genui/a2ui/catalog";
+import { valuzBaseComponentApis } from "@valuz/a2ui/catalog";
 
 describe("buildPrompt", () => {
   it("splices request, data, catalog and the v0.9.1 contract", () => {

@@ -10,7 +10,7 @@ import {
   renderA2UIComponentCatalogText,
   valuzBaseComponentApis,
   type ComponentApi,
-} from "@valuz-genui/a2ui/catalog";
+} from "@valuz/a2ui/catalog";
 
 import { A2UI_VERSION, OUTPUT_FORMAT, ROOT_COMPONENT_NAME, SUPPORTED_CATALOG_ID } from "./constants";
 

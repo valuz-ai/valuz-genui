@@ -1,4 +1,4 @@
-# @valuz-genui/a2ui
+# @valuz/a2ui
 
 > Extracted from Valuz OSS (`frontend/packages/a2ui`, PR valuz-ai/valuz-oss#858) and
 > extended with a streaming sanitizer (`./stream`) and the `<A2UIRenderer>` component.
@@ -53,12 +53,12 @@ machine-readable instead of being hidden in renderer code.
 
 ## Gallery and distribution extensions
 
-The reusable Gallery is exported from `@valuz-genui/a2ui/gallery`. It always owns a
+The reusable Gallery is exported from `@valuz/a2ui/gallery`. It always owns a
 white review surface and can either fill an application shell or run as the
 standalone demo. A distribution adds menu groups without copying the page:
 
 ```tsx
-import { registerA2UIGalleryExtension } from "@valuz-genui/a2ui/gallery";
+import { registerA2UIGalleryExtension } from "@valuz/a2ui/gallery";
 
 registerA2UIGalleryExtension({
   id: "industry",
@@ -98,8 +98,8 @@ import {
   VALUZ_BASE_CATALOG_ID,
   ValuzA2UISurface,
   createValuzMessageProcessor,
-} from "@valuz-genui/a2ui";
-import "@valuz-genui/a2ui/styles.css";
+} from "@valuz/a2ui";
+import "@valuz/a2ui/styles.css";
 
 const processor = createValuzMessageProcessor((action) => {
   console.log(action.name, action.context);
@@ -157,7 +157,7 @@ Distributions extend the base through an explicit registry instead of broad
 host selectors:
 
 ```tsx
-import { registerA2UIThemeExtension } from "@valuz-genui/a2ui/theme";
+import { registerA2UIThemeExtension } from "@valuz/a2ui/theme";
 
 registerA2UIThemeExtension({
   id: "finance",
@@ -206,18 +206,18 @@ ID so saved artifacts remain deterministic.
 
 The package exports three surfaces:
 
-- `@valuz-genui/a2ui/catalog` — component APIs and the catalog ID
-- `@valuz-genui/a2ui/react` — implementations, catalog, processor, `<A2UIRenderer>` (streaming-tolerant)
-- `@valuz-genui/a2ui/stream` — pure sanitizer functions shared by renderer and server (`sanitizeA2UIStream`, `completeJsonFragment`)
-- `@valuz-genui/a2ui/theme` — typed distribution theme extensions
-- `@valuz-genui/a2ui/styles.css` — standalone theme
+- `@valuz/a2ui/catalog` — component APIs and the catalog ID
+- `@valuz/a2ui/react` — implementations, catalog, processor, `<A2UIRenderer>` (streaming-tolerant)
+- `@valuz/a2ui/stream` — pure sanitizer functions shared by renderer and server (`sanitizeA2UIStream`, `completeJsonFragment`)
+- `@valuz/a2ui/theme` — typed distribution theme extensions
+- `@valuz/a2ui/styles.css` — standalone theme
 
 ## Quality gates
 
 ```bash
-pnpm --filter @valuz-genui/a2ui test
-pnpm --filter @valuz-genui/a2ui typecheck
-pnpm --filter @valuz-genui/a2ui lint
+pnpm --filter @valuz/a2ui test
+pnpm --filter @valuz/a2ui typecheck
+pnpm --filter @valuz/a2ui lint
 ```
 
 Tests verify API/implementation parity, inline A2UI capabilities, action

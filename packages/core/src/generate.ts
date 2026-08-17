@@ -4,10 +4,10 @@
  *
  * Model access goes through the `ModelStreamer` contract in `./streamer`, so
  * any host can supply the model: the Vercel AI SDK adapter in
- * `@valuz-genui/server`, a harness-native adapter, or `FakeStreamer` in tests.
+ * `@valuz/server`, a harness-native adapter, or `FakeStreamer` in tests.
  */
-import { valuzBaseComponentApis, type ComponentApi } from "@valuz-genui/a2ui/catalog";
-import type { RejectedComponent } from "@valuz-genui/a2ui/stream";
+import { valuzBaseComponentApis, type ComponentApi } from "@valuz/a2ui/catalog";
+import type { RejectedComponent } from "@valuz/a2ui/stream";
 
 import {
   CONTINUATION_PROMPT,

@@ -6,7 +6,7 @@ import {
   describeA2UIComponent,
   valuzBaseComponentApis,
   type ComponentApi,
-} from "@valuz-genui/a2ui/catalog";
+} from "@valuz/a2ui/catalog";
 import {
   GenerateUIError,
   SUPPORTED_CATALOG_ID,
@@ -17,7 +17,7 @@ import {
   type GenerateUIResult,
   type ModelStreamer,
   type ReasoningEffort,
-} from "@valuz-genui/core";
+} from "@valuz/genui";
 
 import type { GenerationDefaults } from "./config";
 import type { GenerateRequest } from "./request";

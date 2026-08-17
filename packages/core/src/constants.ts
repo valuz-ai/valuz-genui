@@ -1,4 +1,4 @@
-import { VALUZ_BASE_CATALOG_ID } from "@valuz-genui/a2ui/catalog";
+import { VALUZ_BASE_CATALOG_ID } from "@valuz/a2ui/catalog";
 
 /** The one wire protocol this engine speaks. */
 export const A2UI_VERSION = "v0.9.1";

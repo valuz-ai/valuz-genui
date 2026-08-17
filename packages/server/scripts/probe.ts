@@ -3,9 +3,9 @@
  * every stream part type the AI SDK yields (plus raw provider chunk types),
  * so you can see whether reasoning arrives and under which shape.
  *
- *   pnpm --filter @valuz-genui/server probe                       # uses .env
- *   VALUZ_GENUI_PROVIDER=anthropic VALUZ_GENUI_BASE_URL=... pnpm --filter @valuz-genui/server probe
- *   pnpm --filter @valuz-genui/server probe -- --raw              # also dump raw chunks
+ *   pnpm --filter @valuz/server probe                       # uses .env
+ *   VALUZ_GENUI_PROVIDER=anthropic VALUZ_GENUI_BASE_URL=... pnpm --filter @valuz/server probe
+ *   pnpm --filter @valuz/server probe -- --raw              # also dump raw chunks
  */
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";

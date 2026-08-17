@@ -6,8 +6,8 @@
  * renderer drops the offending component and keeps its siblings, so the
  * document is still useful and is delivered as-is with the warnings attached.
  */
-import { valuzBaseComponentApis, type ComponentApi } from "@valuz-genui/a2ui/catalog";
-import { isRecord, sanitizeA2UIStream, type RejectedComponent } from "@valuz-genui/a2ui/stream";
+import { valuzBaseComponentApis, type ComponentApi } from "@valuz/a2ui/catalog";
+import { isRecord, sanitizeA2UIStream, type RejectedComponent } from "@valuz/a2ui/stream";
 
 import { OUTPUT_FORMAT } from "./constants";
 import { documentComponents, parseDocument } from "./extract";

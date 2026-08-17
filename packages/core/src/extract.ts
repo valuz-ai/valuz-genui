@@ -8,7 +8,7 @@
  * output-token cap. Every function here is a pure string/JSON transform and is
  * shared by the generation loop (server) and any host that stores documents.
  */
-import { A2UI_MESSAGE_KEYS, isRecord } from "@valuz-genui/a2ui/stream";
+import { A2UI_MESSAGE_KEYS, isRecord } from "@valuz/a2ui/stream";
 
 import { SUPPORTED_CATALOG_ID } from "./constants";
 

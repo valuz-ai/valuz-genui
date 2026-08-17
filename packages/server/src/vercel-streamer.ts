@@ -1,6 +1,6 @@
 /**
  * `ModelStreamer` over the Vercel AI SDK. Everything SDK- or vendor-specific
- * lives here so `@valuz-genui/core` stays provider-free:
+ * lives here so `@valuz/genui` stays provider-free:
  *
  * - the unified `reasoning` call setting and per-provider `providerOptions`;
  * - reasoning recovered from raw provider chunks (DeepSeek behind
@@ -10,7 +10,7 @@
  * - the non-streaming fallback for channels that deliver nothing over the
  *   stream but answer a plain request.
  */
-import type { ModelStreamer, ReasoningEffort, StreamerEvent, StreamerFinishReason, StreamRequest } from "@valuz-genui/core";
+import type { ModelStreamer, ReasoningEffort, StreamerEvent, StreamerFinishReason, StreamRequest } from "@valuz/genui";
 import { generateText, streamText, type FinishReason, type LanguageModel, type ModelMessage } from "ai";
 
 /** Provider-specific options passed through to the model call (not re-exported by `ai`). */

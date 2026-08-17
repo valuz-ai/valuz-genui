@@ -65,7 +65,7 @@ importers:
 
   apps/playground:
     dependencies:
-      '@valuz-genui/a2ui':
+      '@valuz/a2ui':
         specifier: workspace:*
         version: link:../../packages/a2ui
       react:
@@ -108,7 +108,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@valuz-genui/a2ui':
+      '@valuz/a2ui':
         specifier: workspace:*
         version: link:../a2ui
       zod:
@@ -135,10 +135,10 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.30.0
         version: 1.30.0(zod@3.25.76)
-      '@valuz-genui/a2ui':
+      '@valuz/a2ui':
         specifier: workspace:*
         version: link:../a2ui
-      '@valuz-genui/core':
+      '@valuz/genui':
         specifier: workspace:*
         version: link:../core
       ai:

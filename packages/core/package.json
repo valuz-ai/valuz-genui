@@ -1,5 +1,5 @@
 {
-  "name": "@valuz-genui/core",
+  "name": "@valuz/genui",
   "version": "0.1.0",
   "description": "generate_ui engine: prompt assembly, model streaming loop, A2UI document extraction and validation",
   "type": "module",
@@ -15,7 +15,7 @@
     "prepublishOnly": "tsc -p tsconfig.build.json && node ../../scripts/add-js-extensions.mjs dist"
   },
   "dependencies": {
-    "@valuz-genui/a2ui": "workspace:*",
+    "@valuz/a2ui": "workspace:*",
     "zod": "^3.25.76"
   },
   "license": "MIT",

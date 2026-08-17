@@ -10,14 +10,14 @@ OpenAI-compatible endpoint), and other hosts (e.g. a DeepSeek Harness plugin) su
 `@valuz/a2ui` package (PR valuz-ai/valuz-oss#858) with the host coupling removed.
 
 ```
-packages/a2ui         @valuz-genui/a2ui        76-component catalog (strict zod) + React renderer + theme
+packages/a2ui         @valuz/a2ui        76-component catalog (strict zod) + React renderer + theme
                                          + streaming sanitizer (`./stream`) + <A2UIRenderer>
-packages/core         @valuz-genui/core        prompt assembly · model loop (stream/continue/retry) over
+packages/core         @valuz/genui        prompt assembly · model loop (stream/continue/retry) over
                                          the `ModelStreamer` contract · document extraction · validation
                                          (provider-free; `FakeStreamer` for tests)
-packages/server       @valuz-genui/server      Vercel AI SDK `ModelStreamer` adapter · Hono: POST /generate
+packages/server       @valuz/server      Vercel AI SDK `ModelStreamer` adapter · Hono: POST /generate
                                          (SSE|JSON) · GET /catalog · /health · POST /mcp
-apps/playground       @valuz-genui/playground  Vite + React: request → live render · JSONL · log · gallery
+apps/playground       @valuz/playground  Vite + React: request → live render · JSONL · log · gallery
 ```
 
 ## Quick start
@@ -105,13 +105,13 @@ SSE event; the playground shows it in a collapsible **Thinking** panel above the
   full chain of thought from raw chunks (`response.reasoning_text.delta` / `delta.reasoning_content`).
 - `VALUZ_GENUI_REASONING_EFFORT` sets the effort everywhere; `none` disables thinking on endpoints that
   support it (`openai-compatible` also sends DeepSeek's `thinking: {type: "disabled"}`).
-- `pnpm --filter @valuz-genui/server probe` streams one tiny prompt through the configured model and prints
+- `pnpm --filter @valuz/server probe` streams one tiny prompt through the configured model and prints
   the SDK part types + raw chunk types — the quickest way to see what a new provider exposes.
 
 ## Using the pieces directly
 
 ```ts
-import { generateUI } from "@valuz-genui/core";
+import { generateUI } from "@valuz/genui";
 import { createOpenAI } from "@ai-sdk/openai";
 
 const result = await generateUI({
@@ -124,8 +124,8 @@ result.document; // A2UI JSONL
 ```
 
 ```tsx
-import { A2UIRenderer } from "@valuz-genui/a2ui/react";
-import "@valuz-genui/a2ui/styles.css";
+import { A2UIRenderer } from "@valuz/a2ui/react";
+import "@valuz/a2ui/styles.css";
 
 <A2UIRenderer body={documentOrPartialStream} status="running" theme="dark" />
 ```
@@ -141,7 +141,7 @@ pnpm typecheck      # tsc for every package
 pnpm lint           # eslint
 pnpm test           # vitest: a2ui (79) · core (39) · server (7, incl. an end-to-end MCP call with a mock model)
 pnpm check          # all three
-pnpm --filter @valuz-genui/a2ui dev   # the component gallery alone
+pnpm --filter @valuz/a2ui dev   # the component gallery alone
 ```
 
 ## How generation works
