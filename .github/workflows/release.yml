@@ -1,8 +1,9 @@
 name: Release
 
-# Publishes @valuz-genui/core and @valuz-genui/a2ui to npm. Trigger by
-# publishing a GitHub Release (or run manually). Requires an NPM_TOKEN repo
-# secret with publish rights to the @valuz-genui scope.
+# Publishes @valuz/genui-core and @valuz/a2ui to npm (private workspaces
+# genui-server/genui-playground are skipped). Trigger by publishing a GitHub
+# Release (or run manually). Requires an NPM_TOKEN repo secret with publish
+# rights to the @valuz scope.
 on:
   release:
     types: [published]
